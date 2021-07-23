@@ -8,7 +8,7 @@ async function checkUsernameFree(req, res, next) {
       next()
     } else {
       next({
-        message: "Username taken",
+        message: "username taken",
         status: 422
       })
     }

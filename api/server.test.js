@@ -38,3 +38,18 @@ describe('[POST] /api/auth/register', () => {
   })
 })
 
+describe('[POST] /api/auth/login', () => {
+  test('responds with returned message', async () => {
+    const reg = await request(server).post('/api/auth/login').send({
+      username: 'bethesda', password: "doom"
+    })
+    expect(reg.body.message).toBe("welcome, bethesda")
+  })
+  test('responds with error: username and password required', async () => {
+    const reg = await request(server).post('/api/auth/login').send({
+      username: '', password: ""
+    })
+    expect(reg.body.message).toMatch("username and password required")
+  })
+})
+

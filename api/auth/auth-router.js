@@ -2,7 +2,7 @@ const router = require('express').Router();
 const bcrypt = require("bcryptjs")
 const User = require("./auth-model")
 const jwt = require("jsonwebtoken")
-const { JWT_SECRET } = require("./../../data/dbConfig")
+const { JWT_SECRET } = require("../../secrets/index")
 // const restricted = require("../middleware/restricted")
 const {
   checkPasswordLength,
@@ -52,17 +52,24 @@ router.post('/register', checkPasswordLength, checkUsernameFree, (req, res, next
 });
 
 router.post('/login', checkUsernameExists, (req, res, next) => {
-  const { password } = req.body
-  if (bcrypt.compareSync(password, req.user.password)) {
-    const token = buildToken(req.user)
-    res.json({
-      status: 200,
-      message: `welcome, ${req.user}`,
-      token,
-    })
-  } else if (!password || !req.body.username) {
-    next({ status: 401, message: "username and password required"})
-  } 
+  try {
+    if (bcrypt.compareSync(req.body.password, req.user.password)) {
+      const token = buildToken(req.user)
+      res.json({
+        status: 200,
+        message: `welcome, ${req.body.username}`,
+        token,
+      })
+    } else {
+      res.json({
+        status: 401,
+        message: "invalid credentials"
+      })
+    }
+  } catch (err) {
+    next(err)
+  }
+  
   /*
     IMPLEMENT
     You are welcome to build additional middlewares to help with the endpoint's functionality.
@@ -90,7 +97,6 @@ router.post('/login', checkUsernameExists, (req, res, next) => {
 
 function buildToken(user) {
   const payload = {
-    subject: user.id,
     username: user.username,
   }
   const options = {

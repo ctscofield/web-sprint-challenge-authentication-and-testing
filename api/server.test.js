@@ -22,3 +22,19 @@ describe('[GET] /api/jokes', () => {
     expect(res.body).toMatchSnapshot()
   })
 })
+
+describe('[POST] /api/auth/register', () => {
+  test('responds with status code 201', async () => {
+    const res = await request(server).post('/api/auth/register').send({
+      username: 'bethesda', password: "doom"
+    })
+    expect(res.status).toBe(201)
+  })
+  test('responds with newly created username', async () => {
+    const res = await request(server).post('/api/auth/register').send({
+      username: 'respawn', password: 'apexlegends'
+    })
+    expect(res.body.username).toMatch('respawn')
+  })
+})
+

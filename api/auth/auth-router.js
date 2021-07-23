@@ -1,4 +1,6 @@
 const router = require('express').Router();
+const User = require("./auth-model")
+const restricted = require("../middleware/restricted")
 
 router.post('/register', (req, res) => {
   res.end('implement register, please!');

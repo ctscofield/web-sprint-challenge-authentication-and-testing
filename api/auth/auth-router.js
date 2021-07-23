@@ -3,7 +3,7 @@ const bcrypt = require("bcryptjs")
 const User = require("./auth-model")
 const jwt = require("jsonwebtoken")
 const { JWT_SECRET } = require("./../../data/dbConfig")
-const restricted = require("../middleware/restricted")
+// const restricted = require("../middleware/restricted")
 const {
   checkPasswordLength,
   checkUsernameExists,
@@ -16,6 +16,7 @@ router.post('/register', checkPasswordLength, checkUsernameFree, (req, res, next
   if (username && password) {
     User.add({ username, password: hash })
     .then(newUser => {
+      console.log(newUser)
       res.status(201).json(newUser)
     })
     .catch(next)
@@ -61,9 +62,7 @@ router.post('/login', checkUsernameExists, (req, res, next) => {
     })
   } else if (!password || !req.body.username) {
     next({ status: 401, message: "username and password required"})
-  } else {
-    next({ status: 401, message: "invalid credentials" })
-  }
+  } 
   /*
     IMPLEMENT
     You are welcome to build additional middlewares to help with the endpoint's functionality.
@@ -91,8 +90,7 @@ router.post('/login', checkUsernameExists, (req, res, next) => {
 
 function buildToken(user) {
   const payload = {
-    subject: user.user_id,
-    role_name: user.role_name,
+    subject: user.id,
     username: user.username,
   }
   const options = {

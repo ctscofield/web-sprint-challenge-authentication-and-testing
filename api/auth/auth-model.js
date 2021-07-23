@@ -4,10 +4,10 @@ function findBy(filter) {
   return db("users").where(filter)
 }
 
-function findById(user_id) {
+function findById(id) {
   return db("users")
-    .select("user_id", "username")
-    .where('user_id', user_id).first()
+    .select("id", "username", "password")
+    .where('id', id).first()
 }
 
 async function add(user) {
